@@ -1,0 +1,20 @@
+name: tracker
+
+
+services:
+  initiate:
+    build: .
+    depends_on: 
+      - db
+    restart: on-failure
+    volumes:
+      - ./:/app
+
+  db:
+    image: postgres
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+    ports:
+      - 5432:5432
