@@ -6,13 +6,13 @@ from db.db import create_db_conn
 from sql.transaction import Querier as TransactionQuerier
 from helper_utils import generate_uuid
 
-llm = ChatOllama(
-    model="gemma2:2b",
-    temperature=0
-)
-
 
 def categoriser_chain():
+
+    llm = ChatOllama(
+        model="gemma2:2b",
+        temperature=0
+    )
     template = """
     You will receive a input representing a financial transaction which contains the fields 'remarks' and 'amount'
     Your task is to determine the category of the transaction based on the remarks field.
@@ -71,10 +71,10 @@ input_statement = {"remarks": txn_list[4], "amount": 251}
 ans = Categoriser(input_statement)
 
 conn = create_db_conn()
+
 transaction_querier = TransactionQuerier(conn=conn)
-id = generate_uuid()
 transaction_querier.insert_transaction(
-    id=id, amount=ans.amount, remarks=ans.remarks, category=ans.category)
+    id=generate_uuid(), amount=ans.amount, remarks=ans.remarks, category=ans.category)
 conn.commit()
 
 # values = transaction_querier.get_transaction()

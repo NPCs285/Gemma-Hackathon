@@ -3,17 +3,17 @@ name: tracker
 
 services:
   initiate:
-    build: .
+    build: ./backend/
     depends_on: 
       - db
     restart: on-failure
     volumes:
-      - ./:/app
+      - ./backend/:/app
 
   db:
     image: postgres
     environment:
-      POSTGRES_DB: postgres
+      POSTGRES_DB: tracker
       POSTGRES_PASSWORD: postgres
       POSTGRES_USER: postgres
     ports:
