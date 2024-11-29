@@ -1,4 +1,6 @@
 from fastapi import FastAPI, File, UploadFile
+from service.pdf import get_pdf_dataframe
+from service.csv import get_csv_dataframe
 
 app = FastAPI()
 
@@ -10,6 +12,8 @@ async def hello_world():
 
 @app.post("/file/upload")
 async def file_upload(file: UploadFile):
+    df = get_csv_dataframe(file.file)
+    print(df)
     return {"filename": file.filename, "type": file.content_type}
 
 
