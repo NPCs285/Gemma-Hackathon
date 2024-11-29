@@ -3,3 +3,5 @@ sqlalchemy
 python-dotenv
 psycopg2-binary
 langchain
+fastapi[standard]
+PyPDF2

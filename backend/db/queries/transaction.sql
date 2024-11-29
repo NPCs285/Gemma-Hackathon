@@ -1,5 +1,6 @@
 -- name: GetTransaction :many
-SELECT * FROM transactions;
+SELECT * FROM transactions
+LIMIT = $1;
 
 -- name: InsertTransaction :exec
 INSERT INTO transactions(id,remarks,amount, category) 

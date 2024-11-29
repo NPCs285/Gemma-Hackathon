@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS transactions (
 	id		UUID	PRIMARY KEY,
 	remarks		text	NOT NULL,
 	amount		numeric NOT NULL,
+	date		date,
 	category	text
 );
 
