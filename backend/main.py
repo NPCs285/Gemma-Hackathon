@@ -26,6 +26,7 @@ async def file_chat(file: UploadFile, query: str):
     df_documents = encode_chunks(chunks, file.filename)
     similar_chunks = find_most_similar_chunks(query, df_documents)
     context = " ".join([chunk['chunk'] for chunk in similar_chunks])
-    response = ollama.ask(
-        "gemma", prompt=f"Context: {context}\n\nQuestion: {query}")
+    response = ollama.generate(
+        model="gemma2:2b", prompt=f"Context: {context}\n\nQuestion: {query}")
+
     return {"response": response}
