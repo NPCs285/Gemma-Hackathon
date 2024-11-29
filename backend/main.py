@@ -1,4 +1,4 @@
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, UploadFile # type: ignore
 from service.pdf import get_pdf_dataframe
 from service.csv import get_csv_dataframe
 

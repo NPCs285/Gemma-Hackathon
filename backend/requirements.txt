@@ -3,6 +3,8 @@ sqlalchemy
 python-dotenv
 psycopg2-binary
 langchain
+langchain-ollama
+langchain-text-splitters
 fastapi[standard]
 PyPDF2
-faiss-gpu
+# faiss-gpu
