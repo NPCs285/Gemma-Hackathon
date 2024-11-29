@@ -1,6 +1,6 @@
 from fastapi import FastAPI, File, UploadFile
-from service.pdf import get_pdf_dataframe
-from service.csv import get_csv_dataframe
+
+from agents.cleaner import FileCleaner
 
 app = FastAPI()
 
@@ -12,7 +12,8 @@ async def hello_world():
 
 @app.post("/file/upload")
 async def file_upload(file: UploadFile):
-    return {"filename": file.filename, "type": file.content_type}
+    ans = FileCleaner(file)
+    return ans
 
 
 @app.post("/file/chat")

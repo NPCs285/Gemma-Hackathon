@@ -1,27 +1,32 @@
 from pydantic import BaseModel, Field
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Union
 
 from langchain.output_parsers import PydanticOutputParser
 
 
 class BaseTransaction(BaseModel):
     remarks: str = Field(description="description of transaction")
-    amount: float = Field(description="amount present in the transaction")
+    amount: Union[str, None] = Field(
+        description="amount present in the transaction")
 
     def to_dict(self) -> Dict[str, Any]:
-        return {"remarks": self.description,
-                "amount": self.amount
-                }
+        return {
+            "remarks": self.description,
+            "amount": self.amount
+        }
 
 
 class TransactionList(BaseModel):
     transactions: List[BaseTransaction] = Field(
         description="list of transactions")
 
-    def to_dict(self) -> [str, Any]:
-        return {
-            "transactions": self.transactions
-        }
+    # def to_dict(self) -> Dict[str, Any]:
+    #     return {
+    #         "transactions": self.transactions
+    #     }
+
+    def to_list(self) -> List[BaseTransaction]:
+        return self.transactions
 
 
 class Transaction(BaseModel):
@@ -38,3 +43,4 @@ class Transaction(BaseModel):
 
 transaction_parser = PydanticOutputParser(pydantic_object=Transaction)
 transaction_list_parser = PydanticOutputParser(pydantic_object=TransactionList)
+base_transaction_parser = PydanticOutputParser(pydantic_object=BaseTransaction)
