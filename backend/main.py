@@ -12,11 +12,11 @@ async def hello_world():
 
 @app.post("/file/upload")
 async def file_upload(file: UploadFile):
-    df = get_csv_dataframe(file.file)
-    print(df)
     return {"filename": file.filename, "type": file.content_type}
 
 
 @app.post("/file/chat")
 async def file_chat(file: UploadFile):
     return {"filename": file.filename, "type": file.content_type}
+
+# @app.get("/transaction")
