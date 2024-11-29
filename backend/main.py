@@ -30,3 +30,5 @@ async def file_chat(file: UploadFile, query: str):
         model="gemma2:2b", prompt=f"Context: {context}\n\nQuestion: {query}")
 
     return {"response": response}
+
+# @app.get("/transaction")

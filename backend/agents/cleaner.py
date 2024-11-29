@@ -1,10 +1,9 @@
 from langchain_ollama import ChatOllama
 from langchain_core.prompts import PromptTemplate
-from model.transaction import base_transaction_parser, transaction_list_parser, BaseTransaction
+from model.transaction import base_transaction_parser, transaction_list_parser, TransactionList
 
 from fastapi import UploadFile
 from service.pdf import get_pdf_chunks
-from typing import List
 from io import StringIO
 
 import csv
@@ -44,13 +43,13 @@ def cleaner_chain():
         template=template,
         partial_variables={
             "format_instruction": transaction_list_parser.get_format_instructions()
-        },
+        }
     )
 
     return prompt_template | llm | transaction_list_parser
 
 
-def FileCleaner(file: UploadFile) -> List[BaseTransaction]:
+def FileCleaner(file: UploadFile) -> TransactionList:
     chain = cleaner_chain()
     type = ""
     if "pdf" in file.content_type:
