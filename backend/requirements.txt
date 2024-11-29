@@ -6,3 +6,5 @@ langchain
 fastapi[standard]
 PyPDF2
 charset-normalizer
+pandas
+numpy

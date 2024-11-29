@@ -1,3 +1,4 @@
 backend/*/__pycache__/
 backend/sql/
 __pycache__/
+myenv/
