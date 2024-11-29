@@ -5,6 +5,9 @@ from model.transaction import base_transaction_parser, transaction_list_parser, 
 from fastapi import UploadFile
 from service.pdf import get_pdf_chunks
 from typing import List
+from io import StringIO
+
+import csv
 
 
 def cleaner_chain():
@@ -55,18 +58,25 @@ def FileCleaner(file: UploadFile) -> List[BaseTransaction]:
         output = []
         file_chunks = get_pdf_chunks(
             file.file, max_chunk_size=1900, chunk_overlap=100)
-        print(len(file_chunks))
 
         for chunk in file_chunks:
             ans = chain.invoke(
                 input={"type": type,  "file_content": chunk}
             )
-            print(ans)
-            print("\n\n\n")
             output.append(ans)
         print("Done")
 
     elif "csv" in file.content_type:
         type = "csv"
+        content = file.file.read()
+        text_content = content.decode('utf-8')
+        csv_reader = csv.reader(StringIO(text_content))
+        rows = [row for row in csv_reader]
+        output = []
+        for row in rows:
+            ans = chain.invoke(
+                input={"type": type, "file_content": row}
+            )
+            output.append(ans)
 
     return output
