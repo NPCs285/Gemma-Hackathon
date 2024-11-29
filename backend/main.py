@@ -19,4 +19,6 @@ async def file_upload(file: UploadFile):
 
 @app.post("/file/chat")
 async def file_chat(file: UploadFile):
+    df = get_pdf_dataframe(file.file)
+    print(df)
     return {"filename": file.filename, "type": file.content_type}
