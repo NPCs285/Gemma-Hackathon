@@ -7,7 +7,7 @@ def encode_chunks(chunks, filename):
     document_embeddings = []
     df_documents = pd.DataFrame(columns=['path', 'text_chunks', 'embeddings'])
     for chunk in chunks:
-        embedding = ollama.embeddings("all-miniln", prompt=[chunk])
+        embedding = ollama.embeddings("all-miniln", prompt=chunk)
         document_embeddings.append(embedding)
     new_row = pd.DataFrame({'name': [filename], 'text_chunks': [
                            chunks], 'embeddings': document_embeddings})
