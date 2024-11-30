@@ -1,3 +1,4 @@
+from insights_agent import PostgresInsightsAgent
 from service.transformer import encode_chunks, find_most_similar_chunks
 import ollama
 from fastapi import FastAPI, File, UploadFile
@@ -41,3 +42,18 @@ async def file_ocr(file: UploadFile, query: str):
     return {"response": response}
 
   
+@app.get("/insights")
+async def insights(query: str):
+    try:
+        agent = PostgresInsightsAgent()
+        print("PostgreSQL Transaction Insights Agent")
+        print("====================================")
+            
+        print("\nAnalyzing...")
+        response = agent.get_insights(query)
+        print("\nInsights:", response)
+        return {"response": response}
+            
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        return {"response": f"An unexpected error occurred: {e}"}
