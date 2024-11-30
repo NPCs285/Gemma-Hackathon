@@ -42,5 +42,5 @@ def split_text_into_chunks(text, max_chunk_size=1000):
 
 def get_pdf_dataframe(file: File):
     pdf_text = extract_text_from_pdf(file)
-    chucks = split_text_into_chunks(pdf_text)
-    return chucks
+    chunks = split_text_into_chunks(pdf_text)
+    return chunks
