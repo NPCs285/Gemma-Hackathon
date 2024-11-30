@@ -5,5 +5,7 @@ psycopg2-binary
 langchain
 fastapi[standard]
 PyPDF2
+charset-normalizer
 pandas
 numpy
+charset-normalizer

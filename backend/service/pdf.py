@@ -18,9 +18,10 @@ def extract_text_from_pdf(file: File):
         return "No text available for this document."
 
 
-def split_text_into_chunks(text, max_chunk_size=1000):
+def split_text_into_chunks(text, max_chunk_size=1000, chunk_overlap=0):
     sentence_splitter = RecursiveCharacterTextSplitter(
-        separators=["\n\n", "\n", ". ", "?", "!"], chunk_size=1000, chunk_overlap=0
+        separators=["\n\n", "\n", ". ", "?", "!"], chunk_size=1000,
+        chunk_overlap=chunk_overlap
     )
 
     sentences = sentence_splitter.split_text(text)
@@ -40,7 +41,8 @@ def split_text_into_chunks(text, max_chunk_size=1000):
     return chunks
 
 
-def get_pdf_dataframe(file: File):
+def get_pdf_chunks(file: File, max_chunk_size=1000, chunk_overlap=0):
     pdf_text = extract_text_from_pdf(file)
-    chunks = split_text_into_chunks(pdf_text)
-    return chunks
+    chucks = split_text_into_chunks(
+        pdf_text, max_chunk_size=max_chunk_size, chunk_overlap=chunk_overlap)
+    return chucks
