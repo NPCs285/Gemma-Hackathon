@@ -4,6 +4,7 @@ python-dotenv
 psycopg2-binary
 langchain
 langchain-ollama
+langchain_ollama
 langchain-text-splitters
 fastapi[standard]
 PyPDF2
@@ -12,5 +13,4 @@ pandas
 numpy
 charset-normalizer
 pytesseract
-tesseract-ocr
 chromadb

@@ -62,7 +62,7 @@ async def file_upload(file: UploadFile):
     final_txns = []
     for txn in flatten_arr:
         try:
-            if len(txn['remarks']) == 0 or len(txn['amount']) == 0:
+            if len(txn.remarks) == 0 or len(txn.amount) == 0:
                 continue
             updated_txn = Categoriser(txn)
             float_amt = str_to_float(updated_txn.amount)
@@ -107,11 +107,6 @@ async def file_csv(file: UploadFile, query: str):
     csv_reader = csv.reader(StringIO(text_content))
     rows = [row for row in csv_reader]
     chunks = []
-    for row in rows:
-        chunks.append(' '.join(row))
-    # df_documents = encode_chunks(chunks, file.filename)
-    # similar_chunks = find_most_similar_chunks(query, df_documents)
-    # context = " ".join([chunk['chunk'] for chunk in similar_chunks])
 
     # Using ChromaDB for storing and getting relevant chunks
     for i, row in enumerate(rows):
@@ -141,7 +136,20 @@ async def file_csv(file: UploadFile, query: str):
         temperature=0.0,
         top_k=10
     )
-    message = f"Context: {context}\n\n Question: {query}"
+    # message = f"Context: {context}\n\n Question: {query}"
+    message = (
+    f"You are a financial data analysis assistant. Your primary tasks are:\n"
+    f"1. Calculating total amounts paid to specific individuals or entities.\n"
+    f"2. Counting the number of transactions made to a particular individual or entity.\n"
+    f"3. Answering other calculation-based queries related to financial data.\n\n"
+    f"Note: The amount is denoted by a negative number (e.g., -100), which represents the payment. Use this for calculations. "
+    f"The other amount in the data denotes the balance.\n\n"
+    f"Context: {context}\n\n"
+    f"Based on the above context, carefully analyze the data to answer the following query:\n"
+    f"Question: {query}\n\n"
+    f"Ensure your response is concise, accurate, and directly addresses the question."
+)
+
     response = llm.invoke(message)
 
     chroma_client.delete_collection(file.filename)
