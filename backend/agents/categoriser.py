@@ -1,5 +1,5 @@
 from langchain_core.prompts import PromptTemplate
-from model.transaction import transaction_parser, Transaction
+from model.transaction import transaction_parser, Transaction, BaseTransaction
 from langchain_ollama import ChatOllama
 
 from db.db import create_db_conn
@@ -51,32 +51,11 @@ def categoriser_chain():
 
 
 # Use Transaction class and change input as required
-def Categoriser(input: Transaction) -> Transaction:
+def Categoriser(input: BaseTransaction) -> Transaction:
+    print("===Entering Categoriser===")
     chain = categoriser_chain()
     ans = chain.invoke(
-        input={'transaction': input},
+        input={'transaction': input.to_dict()},
     )
+    print("===Exiting Categoriser===")
     return ans
-
-
-# txn_list = ["PCD/1407/Wow Momo DLF Wow Chick/CHENNAI281124/14:27",
-#             "PCD/1407/EVERSUB INDIA PRIVATE/CHENNAI281124/14:27",
-#             "BATH & BODY WORKS 2095 CHAMPAIGN IL 225519 11/17",
-#             "Zelle Payment From Deepika Satishkumar 22549586066",
-#             "Card Purchase  10/26 Lyft *Ride Fri 10Pm Lyft.Com Ca Card 6083",
-#             "UPI/Blinkit/432947349655/OidZTBLINUPIC24"]
-#
-# input_statement = {"remarks": txn_list[4], "amount": 251}
-#
-# ans = Categoriser(input_statement)
-#
-# conn = create_db_conn()
-#
-# transaction_querier = TransactionQuerier(conn=conn)
-# transaction_querier.insert_transaction(
-#     id=generate_uuid(), amount=ans.amount, remarks=ans.remarks, category=ans.category)
-# conn.commit()
-
-# values = transaction_querier.get_transaction()
-# for txn in values:
-#     print(txn)
