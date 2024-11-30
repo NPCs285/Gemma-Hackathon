@@ -10,5 +10,5 @@ INSERT INTO transactions(id,remarks,amount,transaction_date,category)
 VALUES($1,$2,$3,$4,$5);
 
 -- name: GetByCategory :many
-SELECT category, SUM(amount) FROM transactions
+SELECT category AS name, SUM(amount) AS value FROM transactions
 GROUP BY category;

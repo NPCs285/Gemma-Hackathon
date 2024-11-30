@@ -2,6 +2,7 @@ from insights_agent import PostgresInsightsAgent
 from service.transformer import encode_chunks, find_most_similar_chunks
 import ollama
 from fastapi import FastAPI, File, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
 from langchain_ollama import ChatOllama
 
 from service.pdf import get_pdf_chunks
@@ -28,6 +29,18 @@ ollama_ef = embedding_functions.OllamaEmbeddingFunction(
 chroma_client = chromadb.PersistentClient(path="chroma_persistent_storage")
 
 app = FastAPI()
+origins = [
+    "http://localhost",
+    "http://localhost:5173",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/")
@@ -157,6 +170,6 @@ def retrive_transactions():
     return get_all_transactions()
 
 
-@app.get("/transctions/category")
+@app.get("/transactions/category")
 def retrive_category_wise():
     return get_category_transactions()
