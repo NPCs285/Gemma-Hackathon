@@ -1,6 +1,10 @@
-from fastapi import FastAPI, File, UploadFile # type: ignore
-from service.pdf import get_pdf_dataframe
-from service.csv import get_csv_dataframe
+from service.transformer import encode_chunks, find_most_similar_chunks
+import ollama
+from fastapi import FastAPI, File, UploadFile
+
+from service.pdf import get_pdf_chunks
+
+from agents.cleaner import FileCleaner
 
 app = FastAPI()
 
@@ -12,11 +16,19 @@ async def hello_world():
 
 @app.post("/file/upload")
 async def file_upload(file: UploadFile):
-    df = get_csv_dataframe(file.file)
-    print(df)
-    return {"filename": file.filename, "type": file.content_type}
+    ans = FileCleaner(file)
+    return ans
 
 
 @app.post("/file/chat")
-async def file_chat(file: UploadFile):
-    return {"filename": file.filename, "type": file.content_type}
+async def file_chat(file: UploadFile, query: str):
+    chunks = get_pdf_chunks(file.file)
+    df_documents = encode_chunks(chunks, file.filename)
+    similar_chunks = find_most_similar_chunks(query, df_documents)
+    context = " ".join([chunk['chunk'] for chunk in similar_chunks])
+    response = ollama.generate(
+        model="gemma2:2b", prompt=f"Context: {context}\n\nQuestion: {query}")
+
+    return {"response": response}
+
+# @app.get("/transaction")

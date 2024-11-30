@@ -7,4 +7,7 @@ langchain-ollama
 langchain-text-splitters
 fastapi[standard]
 PyPDF2
-# faiss-gpu
+charset-normalizer
+pandas
+numpy
+charset-normalizer
