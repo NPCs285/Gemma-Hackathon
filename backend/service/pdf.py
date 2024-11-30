@@ -46,3 +46,4 @@ def get_pdf_chunks(file: File, max_chunk_size=1000, chunk_overlap=0):
     chucks = split_text_into_chunks(
         pdf_text, max_chunk_size=max_chunk_size, chunk_overlap=chunk_overlap)
     return chucks
+

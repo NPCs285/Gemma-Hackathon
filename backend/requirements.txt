@@ -13,3 +13,4 @@ numpy
 charset-normalizer
 pytesseract
 tesseract-ocr
+chromadb
