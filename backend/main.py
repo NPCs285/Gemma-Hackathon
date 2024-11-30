@@ -3,7 +3,7 @@ import ollama
 from fastapi import FastAPI, File, UploadFile
 
 from service.pdf import get_pdf_chunks
-
+from service.ocr import get_ocr_text
 from agents.cleaner import FileCleaner
 
 app = FastAPI()
@@ -31,4 +31,13 @@ async def file_chat(file: UploadFile, query: str):
 
     return {"response": response}
 
-# @app.get("/transaction")
+@app.post("/file/ocr")
+async def file_ocr(file: UploadFile, query: str):
+    ocr_result=get_ocr_text(file.file)
+    context = " ".join([transaction["Details"] for transaction in ocr_result["transactions"]])
+    response = ollama.generate(
+        model="gemma2:2b", prompt=f"Context: {context}\n\nQuestion: {query}")
+
+    return {"response": response}
+
+  

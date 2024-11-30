@@ -9,3 +9,5 @@ charset-normalizer
 pandas
 numpy
 charset-normalizer
+pytesseract
+tesseract-ocr
