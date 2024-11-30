@@ -4,6 +4,7 @@ from fastapi import FastAPI, File, UploadFile
 
 from service.pdf import get_pdf_chunks
 from service.ocr import ocr_to_text
+from service.csv import csv_to_text
 from agents.cleaner import FileCleaner
 
 app = FastAPI()
@@ -41,3 +42,11 @@ async def file_ocr(file: UploadFile, query: str):
     return {"response": response}
 
   
+@app.post("/file/csv")
+async def file_csv(file: UploadFile, query: str):
+    df=csv_to_text(file.file)
+    context = df.to_string(index=False)
+    response = ollama.generate(
+        model="gemma2:2b", prompt=f"Context: {context}\n\nQuestion: {query}")
+
+    return {"response": response}
