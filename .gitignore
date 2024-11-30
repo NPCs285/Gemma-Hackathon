@@ -3,3 +3,4 @@ backend/sql/
 __pycache__/
 myenv/
 chroma_persistent_storage/
+gemma-env/

@@ -11,7 +11,7 @@ class BaseTransaction(BaseModel):
 
     def to_dict(self) -> Dict[str, Any]:
         return {
-            "remarks": self.description,
+            "remarks": self.remarks,
             "amount": self.amount
         }
 
@@ -31,7 +31,7 @@ class TransactionList(BaseModel):
 
 class Transaction(BaseModel):
     remarks: str = Field(description="description of transaction")
-    amount: float = Field(description="amount present in the transaction")
+    amount: str = Field(description="amount present in the transaction")
     category: str = Field(description="category of the transaction")
 
     def to_dict(self) -> Dict[str, Any]:

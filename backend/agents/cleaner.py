@@ -57,13 +57,11 @@ def FileCleaner(file: UploadFile) -> TransactionList:
         output = []
         file_chunks = get_pdf_chunks(
             file.file, max_chunk_size=1900, chunk_overlap=100)
-        print(len(file_chunks))
+        print("Number of chunks are :", len(file_chunks))
         for chunk in file_chunks:
             ans = chain.invoke(
                 input={"type": type,  "file_content": chunk}
             )
-            print(ans)
-            print("\n\n\n")
             output.append(ans)
         print("Done")
 
