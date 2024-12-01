@@ -104,7 +104,13 @@ export default function TransactionsDashboard() {
           <CardTitle>Recent Transactions</CardTitle>
         </CardHeader>
         <CardContent>
-          <input value={page.toFixed()} onChange={(e) => { e.target.value === "" ? setPage(0) : setPage(parseInt(e.target.value)) }} placeholder='page' />
+          {page > 1 && <span onClick={() => setPage(page => page - 1)} className='hover:cursor-pointer text-blue-600'> &lt;</span>}
+          <input
+            className='bg-white border-black w-5 mx-1 text-center'
+            value={page.toFixed()}
+            onChange={(e) => { e.target.value === "" ? setPage(0) : setPage(parseInt(e.target.value)) }}
+            placeholder='page' />
+          <span onClick={() => setPage(page => page + 1)} className='hover:cursor-pointer text-blue-600'> &gt;</span>
           <Table>
             <TableHeader>
               <TableRow>
@@ -127,7 +133,7 @@ export default function TransactionsDashboard() {
           </Table>
         </CardContent>
       </Card>
-    </div>
+    </div >
   )
 }
 
