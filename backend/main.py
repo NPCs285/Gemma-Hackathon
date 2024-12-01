@@ -8,7 +8,7 @@ from langchain_ollama import ChatOllama
 from service.pdf import get_pdf_chunks
 from service.ocr import ocr_to_text
 from service.csv import csv_to_text
-from service.transactions import get_all_transactions, get_category_transactions, insert_txn
+from service.transactions import get_all_transactions, get_category_transactions, insert_txn, get_transaction_limit
 
 from agents.cleaner import FileCleaner
 from agents.categoriser import Categoriser
@@ -36,7 +36,7 @@ origins = [
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -62,7 +62,7 @@ async def file_upload(file: UploadFile):
     final_txns = []
     for txn in flatten_arr:
         try:
-            if len(txn['remarks']) == 0 or len(txn['amount']) == 0:
+            if len(txn.remarks) == 0 or len(txn.amount) == 0:
                 continue
             updated_txn = Categoriser(txn)
             float_amt = str_to_float(updated_txn.amount)
@@ -166,8 +166,11 @@ async def insights(query: str):
 
 
 @app.get("/transactions")
-def retrive_transactions():
-    return get_all_transactions()
+def retrive_transactions(limit: int = 0, offset: int = 0):
+    if limit == 0:
+        return get_all_transactions()
+    else:
+        return get_transaction_limit(limit, offset)
 
 
 @app.get("/transactions/category")

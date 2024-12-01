@@ -7,10 +7,11 @@ from typing import List
 from helper_utils import generate_uuid
 
 
-def get_transaction_limit(limit: int) -> List[Transaction]:
+def get_transaction_limit(limit: int, offset: int) -> List[Transaction]:
     conn = create_db_conn()
     transaction_querier = TransactionQuerier(conn=conn)
-    values = transaction_querier.get_transaction_limit(limit=0)
+    values = transaction_querier.get_transaction_limit(
+        limit=limit, offset=offset)
     return values
 
 
