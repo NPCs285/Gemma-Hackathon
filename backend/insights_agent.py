@@ -8,12 +8,13 @@ import os
 from dotenv import load_dotenv
 from db.db import create_db_conn, get_db_url
 
+
 class PostgresInsightsAgent:
     def __init__(self):
         """Initialize database connection using db.py functions"""
         self.model_name = 'insights'
         self.conn = None
-        
+
     def connect(self):
         """Establish database connection using db.py function"""
         try:
@@ -30,7 +31,7 @@ class PostgresInsightsAgent:
         """Fetch transactions from PostgreSQL database"""
         if not self.connect():
             return []
-            
+
         try:
             with self.conn.connection.cursor(cursor_factory=RealDictCursor) as cur:
                 cur.execute("""
@@ -45,10 +46,10 @@ class PostgresInsightsAgent:
                     ORDER BY transaction_date DESC
                     LIMIT %s
                 """, (limit,))
-                
+
                 transactions = cur.fetchall()
                 return [dict(tx) for tx in transactions]
-                
+
         except Exception as e:
             print(f"Query error: {e}")
             return []
@@ -60,7 +61,7 @@ class PostgresInsightsAgent:
         """Get statistical summary of transactions"""
         if not self.connect():
             return {}
-            
+
         try:
             with self.conn.connection.cursor(cursor_factory=RealDictCursor) as cur:
                 cur.execute("""
@@ -86,7 +87,7 @@ class PostgresInsightsAgent:
         """Get summary by category"""
         if not self.connect():
             return []
-            
+
         try:
             with self.conn.connection.cursor(cursor_factory=RealDictCursor) as cur:
                 cur.execute("""
@@ -111,10 +112,11 @@ class PostgresInsightsAgent:
         """Format transactions and statistics for LLM analysis"""
         if not transactions:
             return "No transactions found."
-            
+
         summary = "Recent Transactions:\n\n"
         for tx in transactions:
-            date_str = tx['transaction_date'].strftime('%Y-%m-%d') if tx['transaction_date'] else 'No date'
+            date_str = tx['transaction_date'].strftime(
+                '%Y-%m-%d') if tx['transaction_date'] else 'No date'
             summary += (
                 f"Date: {date_str}\n"
                 f"Amount: ${float(tx['amount']):.2f}\n"
@@ -143,7 +145,7 @@ class PostgresInsightsAgent:
                         f"  Total: ${float(cat['total_amount']):.2f}\n"
                         f"  Average: ${float(cat['avg_amount']):.2f}\n"
                     )
-        
+
         return summary
 
     def get_insights(self, query: str, transaction_limit: int = 100) -> str:
@@ -151,15 +153,20 @@ class PostgresInsightsAgent:
         transactions = self.get_transactions(transaction_limit)
         if not transactions:
             return "No transactions available for analysis."
-        
+
         context = self.format_transactions(transactions)
         try:
             response = ollama.generate(
                 model=self.model_name,
                 prompt=f"""
-                    Analyze these transactions and answer this question: {query} {context}. 
+                    Analyze these transactions and answer this question: {query} . 
                     Please provide detailed insights based on the transaction data shown above. 
                     Focus on specific numbers and trends when relevant.
+
+                    Use the below information for context
+                    ```
+                    {context}
+                    ```
                 """
             )
             return response['response']

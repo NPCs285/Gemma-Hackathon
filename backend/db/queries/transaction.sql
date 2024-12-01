@@ -1,6 +1,8 @@
 -- name: GetTransactionLimit :many
 SELECT * FROM transactions
-LIMIT $1;
+ORDER BY transaction_date DESC
+LIMIT $1
+OFFSET $2;
 
 -- name: GetAllTransaction :many
 SELECT * FROM transactions;
