@@ -10,15 +10,6 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { UUID } from 'crypto'
 
-// Sample data
-const transactions = [
-  { id: 1, category: 'Food', amount: 50, date: '2023-05-01' },
-  { id: 2, category: 'Transport', amount: 30, date: '2023-05-02' },
-  { id: 3, category: 'Entertainment', amount: 100, date: '2023-05-03' },
-  { id: 4, category: 'Food', amount: 75, date: '2023-05-04' },
-  { id: 5, category: 'Transport', amount: 25, date: '2023-05-05' },
-]
-
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042']
 
 type Transactions = {
@@ -37,6 +28,7 @@ export default function TransactionsDashboard() {
 
   const [allTxns, setAllTxns] = useState<Transactions[]>([])
   const [pieData, setPieData] = useState<PieData[]>([])
+  const [page, setPage] = useState<number>(1)
 
   const fetchPieData = async () => {
     try {
@@ -56,10 +48,27 @@ export default function TransactionsDashboard() {
     }
   }
 
+  const fetchTxnPages = async () => {
+    try {
+      if (page === null || page === undefined || page === 0) {
+        return
+      }
+      const offset = (page - 1) * 10
+      const response = await axios.get(`http://localhost:8000/transactions?limit=10&offset=${offset}`)
+      setAllTxns(response.data)
+    } catch (e: any) {
+      console.error(e)
+    }
+
+  }
   useEffect(() => {
-    fetchAllTransaction()
+    //fetchAllTransaction()
     fetchPieData()
   }, [])
+
+  useEffect(() => {
+    fetchTxnPages()
+  }, [page])
 
 
   return (
@@ -95,10 +104,12 @@ export default function TransactionsDashboard() {
           <CardTitle>Recent Transactions</CardTitle>
         </CardHeader>
         <CardContent>
+          <input value={page.toFixed()} onChange={(e) => { e.target.value === "" ? setPage(0) : setPage(parseInt(e.target.value)) }} placeholder='page' />
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Category</TableHead>
+                <TableHead>Remarks</TableHead>
                 <TableHead>Amount</TableHead>
                 <TableHead>Date</TableHead>
               </TableRow>
@@ -107,6 +118,7 @@ export default function TransactionsDashboard() {
               {allTxns.map((transaction) => (
                 <TableRow key={transaction.id}>
                   <TableCell>{transaction.category}</TableCell>
+                  <TableCell>{transaction.remarks}</TableCell>
                   <TableCell>${transaction.amount.toString()}</TableCell>
                   <TableCell>{transaction.transaction_date}</TableCell>
                 </TableRow>
